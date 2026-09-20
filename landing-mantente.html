@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  LANDING PAGE — "Sigo" (mantenimiento de peso)
+  AI T.H.I.N.K. · Fase I - IMPLEMENT
+  ============================================================
+  El formulario ya está conectado a tu endpoint de Formspree
+  (xljdggre) y usa el envío por AJAX: quien lo rellene se queda
+  en la página y ve un mensaje de "gracias" en vez de saltar a otro
+  sitio. No requiere ningún cambio adicional.
+
+  Puedes abrir este archivo haciendo doble clic sobre él: se
+  abrirá en tu navegador y podrás verlo tal cual quedará.
+  ============================================================
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigo — No vuelvas a recuperar el peso que perdiste</title>
+<meta name="description" content="Un plan para mantener tu peso cuando el trabajo, los viajes, las celebraciones o una mudanza intentan sacarte de tu rutina.">
+
+<!-- TailwindCSS vía CDN (tal y como pediste) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50:  '#effcf6',
+            100: '#c9f5e2',
+            200: '#94eac8',
+            300: '#5dd9ac',
+            400: '#31c093',
+            500: '#149c76',
+            600: '#0d8062',
+            700: '#0c6650',
+            800: '#0d5141',
+            900: '#0b4236',
+            950: '#052620',
+          },
+          sunset: {
+            400: '#fb9b5f',
+            500: '#f6793a',
+            600: '#e6591f',
+          },
+          ink: '#0f1e1b',
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'Georgia', 'serif'],
+          body: ['"Inter"', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<!-- Tipografías Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  h1, h2, h3, .font-display { font-family: 'Fraunces', Georgia, serif; }
+
+  /* Overlay degradado para el hero */
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(11,66,54,0.55) 0%, rgba(11,66,54,0.75) 55%, rgba(5,38,32,0.92) 100%);
+  }
+
+  /* Pequeña animación de entrada, discreta */
+  .fade-up {
+    animation: fadeUp 0.7s ease-out both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Menú móvil oculto por defecto */
+  #mobile-menu { display: none; }
+  #mobile-menu.open { display: block; }
+</style>
+</head>
+
+<body class="bg-white text-ink antialiased">
+
+<!-- ============ HEADER / NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-brand-100">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="#inicio" class="font-display text-2xl font-semibold text-brand-800">Sigo</a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-900">
+        <a href="#problema" class="hover:text-brand-600 transition">El reto</a>
+        <a href="#escenarios" class="hover:text-brand-600 transition">Escenarios</a>
+        <a href="#como-funciona" class="hover:text-brand-600 transition">Cómo funciona</a>
+        <a href="#formulario" class="hover:text-brand-600 transition">Contacto</a>
+      </nav>
+
+      <a href="#formulario"
+         class="hidden md:inline-flex items-center rounded-full bg-sunset-500 hover:bg-sunset-600 text-white text-sm font-semibold px-5 py-2.5 transition shadow-sm">
+        Quiero mantenerme
+      </a>
+
+      <!-- Botón menú móvil -->
+      <button id="menu-btn" aria-label="Abrir menú" class="md:hidden text-brand-900">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Menú móvil desplegable -->
+    <div id="mobile-menu" class="md:hidden pb-5 flex flex-col gap-1">
+      <a href="#problema" class="py-2.5 px-2 rounded-lg hover:bg-brand-50 text-brand-900 font-medium">El reto</a>
+      <a href="#escenarios" class="py-2.5 px-2 rounded-lg hover:bg-brand-50 text-brand-900 font-medium">Escenarios</a>
+      <a href="#como-funciona" class="py-2.5 px-2 rounded-lg hover:bg-brand-50 text-brand-900 font-medium">Cómo funciona</a>
+      <a href="#formulario" class="mt-2 text-center rounded-full bg-sunset-500 text-white font-semibold px-5 py-2.5">Quiero mantenerme</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="inicio" class="relative min-h-[92vh] flex items-end sm:items-center pt-16">
+  <div class="absolute inset-0 -z-10">
+    <img src="https://images.pexels.com/photos/4427881/pexels-photo-4427881.jpeg"
+         alt="Mujer profesional revisando el móvil con un café en la mano, representando una vida ocupada"
+         class="w-full h-full object-cover object-[center_25%]">
+    <div class="absolute inset-0 hero-overlay"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 pb-16 sm:pb-0">
+    <div class="max-w-2xl fade-up">
+      <span class="inline-block rounded-full bg-white/15 border border-white/30 text-white text-xs font-semibold tracking-wide uppercase px-4 py-1.5 mb-6">
+        Para quienes ya lo consiguieron
+      </span>
+      <h1 class="font-display text-white text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.08] mb-6">
+        Tu vida va a cambiar.<br>
+        Tu peso no tiene por qué.
+      </h1>
+      <p class="text-brand-50/90 text-lg sm:text-xl leading-relaxed mb-9 max-w-xl">
+        Ya perdiste el peso que querías. Ahora te ayudamos a mantenerlo cuando el trabajo se complica, te vas de viaje, hay una celebración de por medio o cambias de casa — los momentos donde más gente lo recupera todo.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="#formulario"
+           class="inline-flex justify-center items-center rounded-full bg-sunset-500 hover:bg-sunset-600 text-white font-semibold px-7 py-3.5 transition shadow-lg shadow-sunset-900/20">
+          Quiero mantenerme
+        </a>
+        <a href="#como-funciona"
+           class="inline-flex justify-center items-center rounded-full bg-white/10 hover:bg-white/20 border border-white/40 text-white font-semibold px-7 py-3.5 transition">
+          Ver cómo funciona
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EL PROBLEMA ============ -->
+<section id="problema" class="bg-brand-950 text-white py-20 sm:py-28">
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center">
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mb-6 leading-tight">
+      Bajar de peso fue difícil.<br class="hidden sm:block"> No recuperarlo es otro reto distinto.
+    </h2>
+    <p class="text-brand-100/80 text-lg leading-relaxed max-w-2xl mx-auto">
+      La mayoría de los planes se centran en cómo perder peso, pero casi nadie te prepara para lo que viene después:
+      seguir en tu peso cuando la rutina que lo hizo posible desaparece. No es falta de fuerza de voluntad —
+      es no tener un plan para esos momentos concretos.
+    </p>
+  </div>
+</section>
+
+<!-- ============ ESCENARIOS ============ -->
+<section id="escenarios" class="py-20 sm:py-28 bg-white">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="max-w-2xl mb-14">
+      <span class="text-brand-600 font-semibold text-sm tracking-wide uppercase">Los 4 momentos de riesgo</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold text-brand-950 mt-3 mb-4">
+        Sabemos exactamente cuándo aparece el riesgo
+      </h2>
+      <p class="text-brand-900/70 text-lg leading-relaxed">
+        No hace falta esperar a recaer para actuar. Estos son los cuatro momentos donde solemos perder el control —
+        y donde un plan concreto marca la diferencia.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6 lg:gap-8">
+
+      <!-- Escenario 1: Trabajo -->
+      <div class="group relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm">
+        <img src="https://images.pexels.com/photos/4427881/pexels-photo-4427881.jpeg"
+             alt="Mujer ocupada con el móvil y un café, representando la falta de tiempo en el trabajo"
+             class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6">
+          <h3 class="text-white font-display text-xl font-semibold mb-1.5">Reuniones que no paran</h3>
+          <p class="text-white/85 text-sm leading-relaxed">Cuando el trabajo se come tus horas de comida, un plan flexible evita el modo automático de la comida rápida.</p>
+        </div>
+      </div>
+
+      <!-- Escenario 2: Celebraciones -->
+      <div class="group relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm">
+        <img src="https://images.pexels.com/photos/23495685/pexels-photo-23495685.jpeg"
+             alt="Chico sujetando una tarta de cumpleaños, representando las celebraciones"
+             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6">
+          <h3 class="text-white font-display text-xl font-semibold mb-1.5">Cumpleaños, bodas, sobremesas</h3>
+          <p class="text-white/85 text-sm leading-relaxed">Puedes comerte la tarta y seguir en tu peso. Aprende a vivir el día especial sin empezar de cero al siguiente.</p>
+        </div>
+      </div>
+
+      <!-- Escenario 3: Viajes -->
+      <div class="group relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm">
+        <img src="https://images.pexels.com/photos/5205157/pexels-photo-5205157.jpeg"
+             alt="Personas viajando con maletas, representando los viajes"
+             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6">
+          <h3 class="text-white font-display text-xl font-semibold mb-1.5">Maletas hechas, rutina deshecha</h3>
+          <p class="text-white/85 text-sm leading-relaxed">Sin cocina propia ni horarios fijos, aprende a elegir bien fuera de casa sin renunciar al viaje.</p>
+        </div>
+      </div>
+
+      <!-- Escenario 4: Mudanzas / cambios de vida -->
+      <div class="group relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm">
+        <img src="https://images.pexels.com/photos/4246186/pexels-photo-4246186.jpeg"
+             alt="Pareja joven con cajas de mudanza y su perro, representando los cambios de vida"
+             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6">
+          <h3 class="text-white font-display text-xl font-semibold mb-1.5">Una mudanza, una nueva vida</h3>
+          <p class="text-white/85 text-sm leading-relaxed">Los grandes cambios vitales son cuando más gente recupera el peso. Reconstruye tu rutina desde el primer día.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CÓMO FUNCIONA ============ -->
+<section id="como-funciona" class="py-20 sm:py-28 bg-brand-50">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="max-w-2xl mb-14">
+      <span class="text-brand-600 font-semibold text-sm tracking-wide uppercase">Cómo te ayudamos</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold text-brand-950 mt-3 mb-4">
+        Estructura para los momentos difíciles, no más fuerza de voluntad
+      </h2>
+      <p class="text-brand-900/70 text-lg leading-relaxed">
+        No te pedimos disciplina de hierro. Te damos un plan pensado para el día real que vas a vivir.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-8">
+
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-brand-100">
+        <div class="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-brand-950 mb-2">Un plan para cada escenario</h3>
+        <p class="text-brand-900/70 text-sm leading-relaxed">Trabajo, viajes, celebraciones o mudanzas: cada situación tiene su propia guía práctica, no un consejo genérico.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-brand-100">
+        <div class="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-brand-950 mb-2">Aviso en el momento justo</h3>
+        <p class="text-brand-900/70 text-sm leading-relaxed">Avisos y recordatorios cuando detectamos que se acerca uno de tus momentos de riesgo, no a toro pasado.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-8 shadow-sm border border-brand-100">
+        <div class="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-brand-950 mb-2">Sin dietas restrictivas ni culpa</h3>
+        <p class="text-brand-900/70 text-sm leading-relaxed">Un desliz no es un fracaso. Te ayudamos a retomar el rumbo al día siguiente, no a castigarte por ello.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMULARIO ============ -->
+<section id="formulario" class="py-20 sm:py-28 bg-white">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-12">
+      <span class="text-brand-600 font-semibold text-sm tracking-wide uppercase">Último paso</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold text-brand-950 mt-3 mb-4">
+        Cuéntanos tu situación
+      </h2>
+      <p class="text-brand-900/70 text-lg leading-relaxed max-w-xl mx-auto">
+        Escríbenos y te contactaremos para contarte cómo funciona el plan y resolver tus dudas.
+      </p>
+    </div>
+
+    <!-- Mensajes de estado: el script de Formspree los muestra/oculta automáticamente -->
+    <div data-fs-success class="hidden mb-5 rounded-xl border border-brand-300 bg-brand-100 text-brand-900 text-sm font-medium px-5 py-4">
+      ¡Gracias! Hemos recibido tu mensaje y te contactaremos muy pronto.
+    </div>
+    <div data-fs-error class="hidden mb-5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-medium px-5 py-4">
+      Ha habido un problema al enviar el formulario. Inténtalo de nuevo o escríbenos directamente a
+      <a href="mailto:rodriguezcornelia@gmail.com" class="underline">rodriguezcornelia@gmail.com</a>.
+    </div>
+
+    <form id="my-form" action="https://formspree.io/f/xljdggre" method="POST"
+          class="bg-brand-50 rounded-3xl p-6 sm:p-10 border border-brand-100">
+
+      <div class="grid sm:grid-cols-2 gap-5 mb-5">
+        <div>
+          <label for="nombre" class="block text-sm font-semibold text-brand-950 mb-1.5">Nombre *</label>
+          <input type="text" id="nombre" name="nombre" required data-fs-field
+                 class="w-full rounded-xl border border-brand-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                 placeholder="Tu nombre">
+          <span data-fs-error="nombre" class="block text-xs text-red-600 mt-1"></span>
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-semibold text-brand-950 mb-1.5">Email *</label>
+          <input type="email" id="email" name="email" required data-fs-field
+                 class="w-full rounded-xl border border-brand-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                 placeholder="tucorreo@ejemplo.com">
+          <span data-fs-error="email" class="block text-xs text-red-600 mt-1"></span>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label for="telefono" class="block text-sm font-semibold text-brand-950 mb-1.5">Teléfono (opcional)</label>
+        <input type="tel" id="telefono" name="telefono"
+               class="w-full rounded-xl border border-brand-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+               placeholder="+34 600 000 000">
+      </div>
+
+      <div class="mb-5">
+        <label for="escenario" class="block text-sm font-semibold text-brand-950 mb-1.5">¿En qué momento notas más riesgo de recuperar peso?</label>
+        <select id="escenario" name="escenario"
+                class="w-full rounded-xl border border-brand-200 px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+          <option value="">Selecciona una opción</option>
+          <option value="trabajo">Trabajo / falta de tiempo</option>
+          <option value="celebraciones">Celebraciones y comidas familiares</option>
+          <option value="viajes">Viajes</option>
+          <option value="mudanza">Mudanza o cambio de vida</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label for="mensaje" class="block text-sm font-semibold text-brand-950 mb-1.5">Cuéntanos un poco más (opcional)</label>
+        <textarea id="mensaje" name="mensaje" rows="4"
+                  class="w-full rounded-xl border border-brand-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                  placeholder="¿Qué es lo que más te preocupa a la hora de mantener tu peso?"></textarea>
+      </div>
+
+      <label class="flex items-start gap-3 mb-7 cursor-pointer">
+        <input type="checkbox" required
+               class="mt-1 h-4 w-4 rounded border-brand-300 text-brand-600 focus:ring-brand-500">
+        <span class="text-sm text-brand-900/70">Acepto que me contacten a través del email o teléfono facilitado para hablarme sobre este servicio. *</span>
+      </label>
+
+      <button type="submit" data-fs-submit-btn
+              class="w-full sm:w-auto inline-flex justify-center items-center rounded-full bg-sunset-500 hover:bg-sunset-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold px-8 py-3.5 transition shadow-lg shadow-sunset-900/10">
+        Enviar y que me contacten
+      </button>
+
+      <p class="text-xs text-brand-900/50 mt-4">
+        También puedes escribirnos directamente a
+        <a href="mailto:rodriguezcornelia@gmail.com" class="underline hover:text-brand-700">rodriguezcornelia@gmail.com</a>.
+      </p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-brand-950 text-brand-100/70 py-12">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+    <div>
+      <span class="font-display text-white text-xl font-semibold">Sigo</span>
+      <p class="text-sm mt-1.5 max-w-sm">Mantener tu peso, incluso cuando la vida cambia de planes.</p>
+    </div>
+    <div class="text-sm">
+      <p>Contacto: <a href="mailto:rodriguezcornelia@gmail.com" class="underline hover:text-white">rodriguezcornelia@gmail.com</a></p>
+      <p class="mt-1 text-brand-100/40">&copy; <span id="anio"></span> Sigo. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Menú móvil
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+  // Cierra el menú móvil al pulsar un enlace
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // Año automático en el footer
+  document.getElementById('anio').textContent = new Date().getFullYear();
+</script>
+
+<!--
+  Envío del formulario por AJAX a Formspree (endpoint: xljdggre).
+  El usuario se queda en la página y ve un mensaje de "gracias" o de
+  error sin navegar a ningún sitio — no depende de servidor propio.
+  El atributo action del formulario se mantiene como respaldo: si por
+  cualquier motivo esta librería no llegase a cargar, el formulario
+  seguiría funcionando de forma normal (enviando y saliendo de la página).
+-->
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#my-form', formId: 'xljdggre' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+</body>
+</html>
